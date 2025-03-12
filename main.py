@@ -6,8 +6,7 @@ from loguru import logger
 import sys
 
 logger.remove()
-logger.add(sys.stdout, format="<green>{time:HH:mm:ss}</green> | "
-                              "<level>{message}</level>")
+logger.add(sys.stdout, format="<level>{message}</level>")
 
 
 load_dotenv()
