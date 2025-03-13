@@ -57,7 +57,7 @@ btn_transfer = InlineKeyboardButton('💸 Transfer', callback_data='transfer')
 btn_version = InlineKeyboardButton('🔖 Version: V5R1Final', callback_data='version')
 btn_show_seed = InlineKeyboardButton('🌱 Show Seed', callback_data='show_seed')
 btn_edit_name = InlineKeyboardButton('✏️ Edit Name', callback_data='edit_name')
-btn_delete = InlineKeyboardButton('🗑️ Delete', callback_data='delete')
+btn_delete = InlineKeyboardButton('🗑️ Delete', callback_data='delete_wallet')
 back_to_wallet_btn = InlineKeyboardButton("⬅️ Back", callback_data="back_to_wallet")
 create_wallet_markup.row(btn_transfer, btn_version)
 create_wallet_markup.row(btn_show_seed, btn_edit_name)
@@ -132,9 +132,9 @@ def snipe_deployer_pressed(call):
 def snipe_cancel_pressed(call):
     back_pressed(call)
 
+@bot.callback_query_handler(func=lambda call: call.data == "delete_wallet")
 @bot.callback_query_handler(func=lambda call: call.data == "back_to_wallet")
 @bot.callback_query_handler(func=lambda call: call.data == "wallets")
-@bot.callback_query_handler(func=lambda call: call.data == "delete ")
 def wallets_pressed(call):
     logger.info(f"💰 {call.from_user.first_name} | @{call.from_user.username} - Wallets {call.data}")
 
@@ -188,7 +188,6 @@ def show_seed_pressed(call):
     bot.edit_message_text(seed_phrase, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="show_seed_back")), disable_web_page_preview=True, parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "show_seed_back")
-@bot.callback_query_handler(func=lambda call: call.data == "delete")
 def show_seed_back_pressed(call):
     logger.info(f"⬅️ {call.from_user.first_name} | @{call.from_user.username} - Back")
     create_wallet_pressed(call)
