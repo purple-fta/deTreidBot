@@ -19,7 +19,7 @@ bot = telebot.TeleBot(API_TOKEN)
 main_markup = telebot.types.InlineKeyboardMarkup()
 btn_wallets = telebot.types.InlineKeyboardButton('💰 Wallets', callback_data='wallets')
 btn_snipes = telebot.types.InlineKeyboardButton('👁️ Snipes', callback_data='snipes')
-btn_referral = telebot.types.InlineKeyboardButton('➕ Referral System', callback_data='referral')
+btn_referral = telebot.types.InlineKeyboardButton('💎 Referral System', callback_data='referral')
 btn_language = telebot.types.InlineKeyboardButton('🌐 Language', callback_data='language')
 btn_settings = telebot.types.InlineKeyboardButton('⚙️ Settings', callback_data='settings')
 btn_help = telebot.types.InlineKeyboardButton('📚 Help', callback_data='help')
@@ -63,6 +63,11 @@ create_wallet_markup.row(btn_transfer, btn_version)
 create_wallet_markup.row(btn_show_seed, btn_edit_name)
 create_wallet_markup.row(btn_delete, back_to_wallet_btn)
 
+referral_markup = InlineKeyboardMarkup()
+get_link_btn = InlineKeyboardButton("💎 Get link", callback_data="get_link")
+back_link_btn = InlineKeyboardButton("⬅️ Back", callback_data="back_link")
+referral_markup.row(get_link_btn, back_link_btn)
+
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -97,7 +102,6 @@ def back_pressed(call):
     bot.edit_message_text(welcome_message, call.message.chat.id, call.message.message_id, reply_markup=main_markup, parse_mode="Markdown", disable_web_page_preview=True)
 
 @bot.callback_query_handler(func=lambda call: call.data == "language")
-@bot.callback_query_handler(func=lambda call: call.data == "referral")
 @bot.callback_query_handler(func=lambda call: call.data == "export_wallet")
 @bot.callback_query_handler(func=lambda call: call.data == "edit_name")
 @bot.callback_query_handler(func=lambda call: call.data == "transfer")
@@ -222,6 +226,48 @@ def cancel_seed_phrase_pressed(call):
     logger.info(f"🚫 {call.from_user.first_name} | @{call.from_user.username} - Close entering seed phrase")
     wallets_pressed(call)
 
+@bot.callback_query_handler(func=lambda call: call.data == "referral")
+def referral_pressed(call):
+    logger.info(f"💎 {call.from_user.first_name} | @{call.from_user.username} - Referral System")
+    
+    message = (
+        "💎 Referral system rewards:\n\n"
+        "1) 5 referrals - 1 TON ☑️\n"
+        "2) 10 referrals - 2 TON ☑️\n"
+        "3) 20 referrals - 5 TON ☑️\n"
+        "4) 50 referrals - 10 TON ☑️\n"
+        "5) 100 referrals - 20 TON ☑️\n"
+        "6) 200 referrals - 50 TON ☑️\n"
+        "7) 500 referrals - 100 TON ☑️\n\n"
+        "Invite friends and acquaintances and receive TON to your wallet!"
+    )
+
+    bot.edit_message_text(message, call.message.chat.id, call.message.message_id, reply_markup=referral_markup, parse_mode="HTML")
+
+@bot.callback_query_handler(func=lambda call: call.data == "get_link")
+def get_link_pressed(call):
+    logger.info(f"💎 {call.from_user.first_name} | @{call.from_user.username} - Get link")
+
+    message = (
+        "❌ YOU HAVE NO ACTIVE WALLETS.\n\n"
+
+        "<strong>To activate the referral system, you need to:</strong>\n\n"
+
+        "<blockquote>1) Import your crypto wallet that has at least 1 TON.</blockquote>\n"
+        "OR\n"
+        "<blockquote>2.1) 1. Generate a wallet in the bot.\n"
+        "2.2) 2. Top up your balance by >= 3 TON.</blockquote>\n"
+    )
+
+    bot.edit_message_text(message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="get_link_back")), parse_mode="HTML")
+
+@bot.callback_query_handler(func=lambda call: call.data == "get_link_back")
+def get_link_back_pressed(call):
+    referral_pressed(call)
+
+@bot.callback_query_handler(func=lambda call: call.data == "back_link")
+def back_link_pressed(call):
+    back_pressed(call)
 
 bot.polling()
 
