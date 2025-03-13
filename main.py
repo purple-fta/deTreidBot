@@ -232,13 +232,13 @@ def referral_pressed(call):
     
     message = (
         "💎 Referral system rewards:\n\n"
-        "1) 5 referrals - 1 TON ☑️\n"
-        "2) 10 referrals - 2 TON ☑️\n"
-        "3) 20 referrals - 5 TON ☑️\n"
-        "4) 50 referrals - 10 TON ☑️\n"
-        "5) 100 referrals - 20 TON ☑️\n"
-        "6) 200 referrals - 50 TON ☑️\n"
-        "7) 500 referrals - 100 TON ☑️\n\n"
+        "1) 5 referrals - 1 TON \n"
+        "2) 10 referrals - 2 TON \n"
+        "3) 20 referrals - 5 TON \n"
+        "4) 50 referrals - 10 TON \n"
+        "5) 100 referrals - 20 TON \n"
+        "6) 200 referrals - 50 TON \n"
+        "7) 500 referrals - 100 TON \n\n"
         "Invite friends and acquaintances and receive TON to your wallet!"
     )
 
