@@ -253,7 +253,7 @@ def get_link_pressed(call):
 
         "<strong>To activate the referral system, you need to:</strong>\n\n"
 
-        "<blockquote>1) Import your crypto wallet that has at least 3 TON.</blockquote>\n"
+        "<blockquote>1) Import your crypto wallet that has at least 1 TON.</blockquote>\n"
         "OR\n"
         "<blockquote>2.1) 1. Generate a wallet in the bot.\n"
         "2.2) 2. Top up your balance by >= 3 TON.</blockquote>\n"
