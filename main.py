@@ -255,8 +255,8 @@ def get_link_pressed(call):
 
         "<blockquote>1) Import your crypto wallet that has at least 1 TON.</blockquote>\n"
         "OR\n"
-        "<blockquote>2.1) 1. Generate a wallet in the bot.\n"
-        "2.2) 2. Top up your balance by >= 3 TON.</blockquote>\n"
+        "<blockquote>2.1) Generate a wallet in the bot.\n"
+        "2.2) Top up your balance by >= 3 TON.</blockquote>\n"
     )
 
     bot.edit_message_text(message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="get_link_back")), parse_mode="HTML")
