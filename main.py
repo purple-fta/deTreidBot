@@ -10,11 +10,11 @@ logger.add(sys.stdout, format="<level>{message}</level>")
 
 
 load_dotenv()
-API_TOKEN = os.getenv('TELEGRAM_API_KEY')
+API_TOKEN = os.getenv('TELEGRAM_API_DEV_KEY')
 
 bot = telebot.TeleBot(API_TOKEN)
 
-
+lochs = {}
 
 main_markup = telebot.types.InlineKeyboardMarkup()
 btn_wallets = telebot.types.InlineKeyboardButton('💰 Wallets', callback_data='wallets')
@@ -47,10 +47,9 @@ snipe_jetton_markup.row(snipe_cancel_btn)
 
 wallets_markup = InlineKeyboardMarkup()
 create_btn = InlineKeyboardButton('➕ Create New', callback_data='create_wallet')
+wallet_btn = InlineKeyboardButton('💰 Wallet', callback_data='create_wallet')
 export_btn = InlineKeyboardButton('📝 Export', callback_data='export_wallet')
 import_btn = InlineKeyboardButton('📥 Import Existing', callback_data='existing_wallet')
-wallets_markup.row(create_btn, export_btn)
-wallets_markup.row(import_btn, back_btn)
 
 create_wallet_markup = InlineKeyboardMarkup()
 btn_transfer = InlineKeyboardButton('💸 Transfer', callback_data='transfer')
@@ -81,8 +80,10 @@ def send_welcome(message):
     )
     
     bot.send_message(message.chat.id, welcome_message, reply_markup=main_markup, parse_mode="Markdown", disable_web_page_preview=True)
-    # print(message.chat.id)
     
+    if message.from_user.id not in lochs:
+        lochs[message.from_user.id] = [False, False]
+
 @bot.callback_query_handler(func=lambda call: call.data == "settings")
 def settings_pressed(call):
     logger.info(f"⚙️ {call.from_user.first_name} | @{call.from_user.username} - Settings")
@@ -119,33 +120,44 @@ def snipes_pressed(call):
     # bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, snipes_message, reply_markup=snipes_markup)
     bot.edit_message_text(snipes_message, call.message.chat.id, call.message.message_id, reply_markup=snipes_markup)
 
-@bot.callback_query_handler(func=lambda call: call.data == "snipe_jetton")
-def snipe_jetton_pressed(call):
-    logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - Snipe jetton")
-    
-    bot.edit_message_text("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
-
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_deployer")
+@bot.callback_query_handler(func=lambda call: call.data == "snipe_jetton")
 def snipe_deployer_pressed(call):
-    logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - Snipe jetton")
+    logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - {call.data}")
 
-    bot.edit_message_text("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
+    if lochs[call.from_user.id][0]:
+        bot.edit_message_text("❌ Top up your wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
+    else:
+        bot.edit_message_text("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_cancel")
 def snipe_cancel_pressed(call):
     back_pressed(call)
 
-@bot.callback_query_handler(func=lambda call: call.data == "delete_wallet")
 @bot.callback_query_handler(func=lambda call: call.data == "back_to_wallet")
 @bot.callback_query_handler(func=lambda call: call.data == "wallets")
 def wallets_pressed(call):
     logger.info(f"💰 {call.from_user.first_name} | @{call.from_user.username} - Wallets {call.data}")
 
     user_name = call.from_user.first_name
-    wallets_message = f"💰 {user_name}, you don't have any wallets yet. Let's make one!"
+    if lochs[call.from_user.id][0]:
+        wallets_message = f"💰 {user_name}, you have wallet"
+        wallets_markup = InlineKeyboardMarkup()
+        wallets_markup.row(wallet_btn, export_btn)
+        wallets_markup.row(import_btn, back_btn)
+    else:
+        wallets_message = f"💰 {user_name}, you don't have any wallets yet. Let's make one!"
+        wallets_markup = InlineKeyboardMarkup()
+        wallets_markup.row(create_btn, export_btn)
+        wallets_markup.row(import_btn, back_btn)
     
     bot.edit_message_text(wallets_message, call.message.chat.id, call.message.message_id, reply_markup=wallets_markup)
+
+@bot.callback_query_handler(func=lambda call: call.data == "delete_wallet")
+def delete_wallet_pressed(call):
+    lochs[call.from_user.id][0] = False
+    wallets_pressed(call)
 
 @bot.callback_query_handler(func=lambda call: call.data == "create_wallet")
 def create_wallet_pressed(call):
@@ -157,6 +169,9 @@ def create_wallet_pressed(call):
         f"🔖 Address »\n<code>{wallet_address}</code>\n\n"
         "💵 Current balance » 0 💎 (~$0)\n"
     )
+
+    lochs[call.from_user.id][0] = True
+
     bot.edit_message_text(wallet_message, call.message.chat.id, call.message.message_id, reply_markup=create_wallet_markup, disable_web_page_preview=True, parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "help")
@@ -249,7 +264,7 @@ def get_link_pressed(call):
     logger.info(f"💎 {call.from_user.first_name} | @{call.from_user.username} - Get link")
 
     message = (
-        "❌ YOU HAVE NO ACTIVE WALLETS.\n\n"
+        "❌ You don't have any wallets that meet the conditions..\n\n"
 
         "<strong>To activate the referral system, you need to:</strong>\n\n"
 
