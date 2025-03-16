@@ -10,7 +10,7 @@ logger.add(sys.stdout, format="<level>{message}</level>")
 
 
 load_dotenv()
-API_TOKEN = os.getenv('TELEGRAM_API_DEV_KEY')
+API_TOKEN = os.getenv('TELEGRAM_API_KEY')
 
 bot = telebot.TeleBot(API_TOKEN)
 
