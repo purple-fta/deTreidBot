@@ -12,3 +12,4 @@ telebot==0.0.5
 telegram==0.0.1
 urllib3==2.3.0
 win32_setctime==1.2.0
+ton
