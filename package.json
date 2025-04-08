@@ -1,0 +1,20 @@
+{
+  "name": "dreiner",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@orbs-network/ton-access": "^2.3.3",
+    "@ton/core": "^0.60.1",
+    "@ton/crypto": "^3.3.0",
+    "@ton/ton": "^15.2.1",
+    "buffer": "^6.0.3"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "description": ""
+}

