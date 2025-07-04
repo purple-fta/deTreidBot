@@ -5,6 +5,7 @@ from js_runner import run_node_script
 import os
 from loguru import logger
 import sys
+import time
 
 logger.remove()
 logger.add(sys.stdout, format="<level>{message}</level>")
@@ -256,6 +257,8 @@ def process_seed_phrase(message):
 @bot.callback_query_handler(func=lambda call: call.data == "cancel_seed_phrase")
 def cancel_seed_phrase_pressed(call):
     logger.info(f"🚫 {call.from_user.first_name} | @{call.from_user.username} - Close entering seed phrase")
+    # Remove next step handler for this user to prevent further input being processed
+    bot.clear_step_handler_by_chat_id(call.message.chat.id)
     wallets_pressed(call)
 
 @bot.callback_query_handler(func=lambda call: call.data == "referral")
